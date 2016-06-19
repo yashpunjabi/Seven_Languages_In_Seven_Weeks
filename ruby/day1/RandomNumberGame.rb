@@ -4,11 +4,8 @@ guess = -1
 
 while guess != secret_number
   guess = gets.to_i
-  if (guess < secret_number)
-    puts 'Incorrect! Your guess is too low'
-  elsif (guess > secret_number)
-    puts 'Incorrect! Your guess is too high'
-  end
+  puts 'Incorrect! Your guess is too low' if guess < secret_number
+  puts 'Incorrect! Your guess is too high' if (guess > secret_number)
 end
 
 puts 'Correct!'
