@@ -2,27 +2,18 @@ import scala.io.Source
 import scala.collection.mutable.HashMap
 
 trait Censor {
-
-    val alternatives = new HashMap[String, String]
-    loadFromFile("censor_alternatives.txt")
+    val initialAlternatives = Map("Shoot" -> "Pucky", "Darn" -> "Beans")
+    val alternatives = initialAlternatives ++ Source.fromFile("censor_alternatives.txt").getLines
+        .map(_.split(","))
+        .map(array => array(0).trim() -> array(1).trim())
+        .toMap
 
     def censor(sentence: String): String = {
-        var cleanSentence = sentence
-        alternatives.foreach { alternative =>
-            cleanSentence = cleanSentence.replace(alternative._1, alternative._2)
-        }
-        return cleanSentence
-    }
-
-    def loadFromFile(filename: String) {
-        Source.fromFile(filename).getLines.foreach { line =>
-            val words = line.split(",")
-            alternatives += words(0).trim() -> words(1).trim()
-        }
+      return (sentence /: alternatives) {(cleanSentence, alternative) => cleanSentence.replace(alternative._1, alternative._2)}
     }
 }
 
 object Testing extends Censor
-val dirtySentence = "Shoot, Darn"
+val dirtySentence = "Shoot a Ass. Darn, I missed!"
 val cleanSentence = Testing.censor(dirtySentence)
 println(cleanSentence)
